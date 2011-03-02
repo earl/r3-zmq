@@ -134,7 +134,6 @@ static int cmd_zmq_msg_init_data(RXIFRM *frm, void *data) {
     size_t msg_size;
     char *msg_data = rlu_copy_binary(binary, &msg_size);
     int rc = zmq_msg_init_data(msg, msg_data, msg_size, &free_msg_data, NULL);
-    free(msg_data);
     RXA_INT64(frm, 1) = rc;
     RXA_TYPE(frm, 1) = RXT_INTEGER;
     return RXR_VALUE;
