@@ -1,0 +1,16 @@
+zmqext
+======
+
+A REBOL 3 extension providing a low-level binding to the ØMQ library.
+
+
+License
+-------
+
+Copyright (C) 2011 Andreas Bolka, Licensed under the terms of the Apache
+License, Version 2.0 (see LICENSE.zmqext).
+
+This extension uses the ØMQ library (libzmq), which is licensed under the terms
+of the GNU Lesser General Public License (LGPL), Version 3 (see
+LICENSE.libzmq). For more details on the ØMQ library license, consult
+http://www.zeromq.org/area:licensing.
