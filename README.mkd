@@ -4,6 +4,19 @@ zmqext
 A REBOL 3 extension providing a low-level binding to the ØMQ library.
 
 
+Status
+------
+
+This extension is currently developed and tested against ØMQ 2.0.10. Most parts of the ØMQ API are implemented, currently missing are:
+
+- `zmq_setsockopt`, `zmq_getsockopt`
+- `zmq_poll`
+- `zmq_msg_copy`, `zmq_msg_move`
+
+Simple REP/REQ examples already work fine. PUB/SUB is expected to work as soon
+as `setsockopt` is implemented.
+
+
 License
 -------
 
