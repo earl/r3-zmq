@@ -165,6 +165,24 @@ static int cmd_zmq_msg_size(RXIFRM *frm, void *data) {
     return RXR_VALUE;
 }
 
+static int cmd_zmq_msg_copy(RXIFRM *frm, void *data) {
+    zmq_msg_t *msg_dest = (zmq_msg_t*)RXA_HANDLE(frm, 1);
+    zmq_msg_t *msg_src = (zmq_msg_t*)RXA_HANDLE(frm, 2);
+    int rc = zmq_msg_copy(msg_dest, msg_src);
+    RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
+static int cmd_zmq_msg_move(RXIFRM *frm, void *data) {
+    zmq_msg_t *msg_dest = (zmq_msg_t*)RXA_HANDLE(frm, 1);
+    zmq_msg_t *msg_src = (zmq_msg_t*)RXA_HANDLE(frm, 2);
+    int rc = zmq_msg_move(msg_dest, msg_src);
+    RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
 static int cmd_zmq_socket(RXIFRM *frm, void *data) {
     void *ctx = RXA_HANDLE(frm, 1);
     int type = RXA_INT32(frm, 2);
