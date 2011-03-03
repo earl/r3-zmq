@@ -34,7 +34,8 @@ int RX_Call(int cmd, RXIFRM *frm, void *data) {
 
 // --- helpers ---
 
-REBSER *rlu_strncpy(REBSER *dest, const char *source, size_t n) {
+/** Copy from a C char* into a REBOL string!'s (or binary!'s) data. */
+static REBSER *rlu_strncpy(REBSER *dest, const char *source, size_t n) {
     int i;
     for (i = 0; i < n; ++i) {
         RL_SET_CHAR(dest, i, source[i]);
@@ -42,12 +43,14 @@ REBSER *rlu_strncpy(REBSER *dest, const char *source, size_t n) {
     return dest;
 }
 
-REBSER *rlu_make_string(const char *source) {
+/** Create a REBOL string!'s data from a C char*. */
+static REBSER *rlu_make_string(const char *source) {
     size_t size = strlen(source);
     return rlu_strncpy(RL_MAKE_STRING(size, FALSE), source, size);
 }
 
-char *rlu_copy_binary(const RXIARG binary, size_t *size) {
+/** Copy a REBOL binary!'s data & size into a C char* & size_t, respectively. */
+static char *rlu_copy_binary(const RXIARG binary, size_t *size) {
     REBSER *binary_series = binary.series;
     size_t binary_head = binary.index;
     size_t binary_tail = RL_SERIES(binary_series, RXI_SER_TAIL);
@@ -61,7 +64,8 @@ char *rlu_copy_binary(const RXIARG binary, size_t *size) {
     return result;
 }
 
-char *rlu_copy_string(const RXIARG string) {
+/** Copy a REBOL string!'s data into a C char* (null-terminated). */
+static char *rlu_copy_string(const RXIARG string) {
     // @@ should use RL_GET_STRING or something. won't work for unicode strings
     REBSER *string_series = string.series;
     size_t string_head = string.index;
@@ -150,7 +154,7 @@ static int cmd_zmq_msg_data(RXIFRM *frm, void *data) {
     zmq_msg_t *msg = (zmq_msg_t*)RXA_HANDLE(frm, 1);
     size_t msg_size = zmq_msg_size(msg);
     void *msg_data = zmq_msg_data(msg);
-    REBSER *result = RL_MAKE_STRING(msg_size, FALSE);
+    REBSER *result = RL_MAKE_STRING(msg_size, FALSE); // @@ rlu_make_binary
     RXA_SERIES(frm, 1) = rlu_strncpy(result, msg_data, msg_size);
     RXA_INDEX(frm, 1) = 0;
     RXA_TYPE(frm, 1) = RXT_BINARY;
