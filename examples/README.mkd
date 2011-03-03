@@ -1,0 +1,10 @@
+Examples from the ØMQ Guide ported to REBOL using the r3-zmq extension.
+
+For those examples to work as-is, you require:
+
+- libzmq, the ØMQ core library (as binary)
+- zmqext, the R3 extension wrapping libzmq (as binary)
+- extload.r3, an extension loader with improved cross-platform support
+
+You should already have the former two, extload.r3 can be obtained from
+https://github.com/earl/rebol3/ (in the modules/ subdirectory).
