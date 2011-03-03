@@ -44,30 +44,119 @@ export zmq-constants: map [
     sndmore 2
 ]
 
-export zmq-init: command [io-threads [integer!]]
-export zmq-term: command [ctx [handle!]]
+export zmq-init: command [
+    "Initialise 0MQ context"
+    io-threads [integer!]
+]
 
-export zmq-msg-alloc: command []
-export zmq-msg-free: command [msg [handle!]]
-export zmq-msg-init: command [msg [handle!]]
-export zmq-msg-init-size: command [msg [handle!] size [integer!]]
-export zmq-msg-init-data: command [msg [handle!] data [binary!]]
-export zmq-msg-close: command [msg [handle!]]
-export zmq-msg-data: command [msg [handle!]]
-export zmq-msg-size: command [msg [handle!]]
-export zmq-msg-copy: command [msg-dest [handle!] msg-src [handle!]]
-export zmq-msg-move: command [msg-dest [handle!] msg-src [handle!]]
+export zmq-term: command [
+    "Terminate 0MQ context"
+    ctx [handle!]
+]
 
-export zmq-socket: command [ctx [handle!] type [integer!]]
-export zmq-close: command [socket [handle!]]
-;;; @@ getsockopt, setsockopt
-export zmq-bind: command [socket [handle!] endpoint [string!]]
-export zmq-connect: command [socket [handle!] endpoint [string!]]
-export zmq-send: command [socket [handle!] msg [handle!] flags [integer!]]
-export zmq-recv: command [socket [handle!] msg [handle!] flags [integer!]]
-;;; @@ poll?
+export zmq-msg-alloc: command [
+    "Allocate memory for a 0MQ message object"
+]
 
-export zmq-errno: command []
-export zmq-strerror: command [errnum [integer!]]
+export zmq-msg-free: command [
+    "Free the memory previously allocated for a 0MQ message object"
+    msg [handle!]
+]
 
-export zmq-version: command []
+export zmq-msg-init: command [
+    "Initialise empty 0MQ message"
+    msg [handle!]
+]
+
+export zmq-msg-init-size: command [
+    "Initialise 0MQ message of a specified size"
+    msg [handle!]
+    size [integer!]
+]
+
+export zmq-msg-init-data: command [
+    "Initialise 0MQ message with the supplied data"
+    msg [handle!]
+    data [binary!]
+]
+
+export zmq-msg-close: command [
+    "Release 0MQ message"
+    msg [handle!]
+]
+
+export zmq-msg-data: command [
+    "Retrieve message content (as binary!)"
+    msg [handle!]
+]
+
+export zmq-msg-size: command [
+    "Retrieve message content size in bytes"
+    msg [handle!]
+]
+
+export zmq-msg-copy: command [
+    "Copy content of a message to another message"
+    msg-dest [handle!]
+    msg-src [handle!]
+]
+
+export zmq-msg-move: command [
+    "Move content of a message to another message"
+    msg-dest [handle!]
+    msg-src [handle!]
+]
+
+export zmq-socket: command [
+    "Create 0MQ socket"
+    ctx [handle!]
+    type [integer!]
+]
+
+export zmq-close: command [
+    "Close 0MQ socket"
+    socket [handle!]
+]
+
+; @@ getsockopt, setsockopt
+
+export zmq-bind: command [
+    "Accept connections on a socket"
+    socket [handle!]
+    endpoint [string!]
+]
+
+export zmq-connect: command [
+    "Connect a socket"
+    socket [handle!]
+    endpoint [string!]
+]
+
+export zmq-send: command [
+    "Send a message on a socket"
+    socket [handle!]
+    msg [handle!]
+    flags [integer!]
+]
+
+export zmq-recv: command [
+    "Receive a message from a socket"
+    socket [handle!]
+    msg [handle!]
+    flags [integer!]
+]
+
+; @@ poll?
+
+export zmq-errno: command [
+    "Retrieve the error code"
+]
+
+export zmq-strerror: command [
+    "Get 0MQ error message string for a given error code"
+    errnum [integer!]
+]
+
+export zmq-version: command [
+    "Report 0MQ library version"
+]
