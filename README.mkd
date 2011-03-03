@@ -12,8 +12,9 @@ This extension is currently developed and tested against ØMQ 2.0.10. Most parts
 - `zmq_setsockopt`, `zmq_getsockopt`
 - `zmq_poll`
 
-Simple REP/REQ examples already work fine. PUB/SUB is expected to work as soon
-as `setsockopt` is implemented.
+Simple REP/REQ examples already work fine (such as the included
+`examples/hwclient.r3` and `examples/hwserver.r3`). PUB/SUB is expected to work
+as soon as `setsockopt` is implemented.
 
 
 License
