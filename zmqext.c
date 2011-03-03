@@ -34,7 +34,7 @@ int RX_Call(int cmd, RXIFRM *frm, void *data) {
 
 // --- helpers ---
 
-/** Copy from a C char* into a REBOL string!'s (or binary!'s) data. */
+/** Copy from a C char* into a REBOL string!/binary!'s data. */
 static REBSER *rlu_strncpy(REBSER *dest, const char *source, size_t n) {
     int i;
     for (i = 0; i < n; ++i) {
@@ -43,10 +43,17 @@ static REBSER *rlu_strncpy(REBSER *dest, const char *source, size_t n) {
     return dest;
 }
 
-/** Create a REBOL string!'s data from a C char*. */
+/** Create a REBOL (Latin1-)string!'s data from a C char*. */
 static REBSER *rlu_make_string(const char *source) {
     size_t size = strlen(source);
-    return rlu_strncpy(RL_MAKE_STRING(size, FALSE), source, size);
+    REBSER *result = RL_MAKE_STRING(size, FALSE); // FALSE: Latin1, no Unicode
+    return rlu_strncpy(result, source, size);
+}
+
+/** Create a REBOL binary!'s data from a C char* & size_t. */
+static REBSER *rlu_make_binary(const char *source, size_t size) {
+    REBSER *result = RL_MAKE_STRING(size, FALSE); // @@ A111+: RL_MAKE_BINARY
+    return rlu_strncpy(result, source, size);
 }
 
 /** Copy a REBOL binary!'s data & size into a C char* & size_t, respectively. */
@@ -154,8 +161,7 @@ static int cmd_zmq_msg_data(RXIFRM *frm, void *data) {
     zmq_msg_t *msg = (zmq_msg_t*)RXA_HANDLE(frm, 1);
     size_t msg_size = zmq_msg_size(msg);
     void *msg_data = zmq_msg_data(msg);
-    REBSER *result = RL_MAKE_STRING(msg_size, FALSE); // @@ rlu_make_binary
-    RXA_SERIES(frm, 1) = rlu_strncpy(result, msg_data, msg_size);
+    RXA_SERIES(frm, 1) = rlu_make_binary(msg_data, msg_size);
     RXA_INDEX(frm, 1) = 0;
     RXA_TYPE(frm, 1) = RXT_BINARY;
     return RXR_VALUE;
