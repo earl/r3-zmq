@@ -23,6 +23,7 @@ R3_HOSTKIT = ../../hostkit
 # -----------------------------------------------------------------------------
 
 # Standard hostkit/extension overrides
+override CPPFLAGS =
 %.so: override CPPFLAGS += -DTO_LINUX
 %.dll: override CPPFLAGS += -DTO_WIN32
 override CFLAGS += -I $(R3_HOSTKIT)/src/include
