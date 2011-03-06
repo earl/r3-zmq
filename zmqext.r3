@@ -194,3 +194,10 @@ export zmq-strerror: command [
 export zmq-version: command [
     "Report 0MQ library version"
 ]
+
+;; Temporary workaround for bug#1868
+export zmq-equal?: command [
+    "Returns TRUE if two 0MQ handle! values are equal"
+    value1 [handle!]
+    value2 [handle!]
+]

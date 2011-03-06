@@ -378,3 +378,12 @@ static int cmd_zmq_version(RXIFRM *frm, void *data) {
     RXA_TYPE(frm, 1) = RXT_TUPLE;
     return RXR_VALUE;
 }
+
+/** Temporary workaround for bug#1868. */
+static int cmd_zmq_equal_(RXIFRM *frm, void *data) {
+    void *h1 = RXA_HANDLE(frm, 1);
+    void *h2 = RXA_HANDLE(frm, 2);
+    RXA_LOGIC(frm, 1) = h1 == h2;
+    RXA_TYPE(frm, 1) = RXT_LOGIC;
+    return RXR_VALUE;
+}
