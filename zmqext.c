@@ -9,6 +9,7 @@
 ** Version 3.
 */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -315,14 +316,16 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     REBSER *result;
     RXIARG result_events;
 
-    // @@ check spec length
+    assert((spec_tail - spec_index) % 2 == 0
+            && "Invalid poll-spec: length"); // @@ error!
 
     // Prepare pollitem_t array
     zmq_pollitem_t pollitems[nitems];
     for (i = 0; i < nitems; ++i) {
         socket_type = RL_GET_VALUE(spec_block.series, i * 2, &socket);
         events_type = RL_GET_VALUE(spec_block.series, i * 2 + 1, &events);
-        // @@ check types
+        assert(socket_type == RXT_HANDLE && events_type == RXT_INTEGER
+                && "Invalid poll-spec: types"); // @@ error!
 
         pollitems[i].socket = socket.addr;
         pollitems[i].events = ZMQ_POLLIN;
