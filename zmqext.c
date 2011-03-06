@@ -10,6 +10,7 @@
 */
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <zmq.h>
 
@@ -206,6 +207,51 @@ static int cmd_zmq_close(RXIFRM *frm, void *data) {
     void *socket = RXA_HANDLE(frm, 1);
     int rc = zmq_close(socket);
     RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
+static int cmd_zmq_setsockopt_binary(RXIFRM *frm, void *data) {
+    void *socket = RXA_HANDLE(frm, 1);
+    int name = RXA_INT32(frm, 2);
+    RXIARG value_binary = RXA_ARG(frm, 3);
+    size_t value_size;
+    char *value_data = rlu_copy_binary(value_binary, &value_size);
+    int rc = zmq_setsockopt(socket, name, value_data, value_size);
+    RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
+static int cmd_zmq_getsockopt_binary(RXIFRM *frm, void *data) {
+    void *socket = RXA_HANDLE(frm, 1);
+    int name = RXA_INT32(frm, 2);
+    size_t value_size = RXA_INT64(frm, 3);
+    char value_data[value_size];
+    int rc = zmq_getsockopt(socket, name, value_data, &value_size); // @@ check
+    RXA_SERIES(frm, 1) = rlu_make_binary(value_data, value_size);
+    RXA_INDEX(frm, 1) = 0;
+    RXA_TYPE(frm, 1) = RXT_BINARY;
+    return RXR_VALUE;
+}
+
+static int cmd_zmq_setsockopt_int(RXIFRM *frm, void *data) {
+    void *socket = RXA_HANDLE(frm, 1);
+    int name = RXA_INT32(frm, 2);
+    int64_t value = RXA_INT64(frm, 3);
+    int rc = zmq_setsockopt(socket, name, &value, sizeof(value));
+    RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
+static int cmd_zmq_getsockopt_int(RXIFRM *frm, void *data) {
+    void *socket = RXA_HANDLE(frm, 1);
+    int name = RXA_INT32(frm, 2);
+    int64_t value_data;
+    size_t value_size = sizeof(value_data);
+    int rc = zmq_getsockopt(socket, name, &value_data, &value_size); // @@ check
+    RXA_INT64(frm, 1) = value_data;
     RXA_TYPE(frm, 1) = RXT_INTEGER;
     return RXR_VALUE;
 }

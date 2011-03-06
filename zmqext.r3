@@ -118,7 +118,32 @@ export zmq-close: command [
     socket [handle!]
 ]
 
-; @@ getsockopt, setsockopt
+export zmq-setsockopt-binary: command [
+    "Set 0MQ socket options (of 0MQ option value type 'binary')"
+    socket [handle!]
+    name [integer!]
+    value [binary!]
+]
+
+export zmq-getsockopt-binary: command [
+    "Get 0MQ socket options (of 0MQ option value type 'binary')"
+    socket [handle!]
+    name [integer!]
+    size [integer!]
+]
+
+export zmq-setsockopt-int: command [
+    "Set 0MQ socket options (of 0MQ option value type '[u]int64_t')"
+    socket [handle!]
+    name [integer!]
+    value [integer!]
+]
+
+export zmq-getsockopt-int: command [
+    "Get 0MQ socket options (of 0MQ option value type '[u]int64_t')"
+    socket [handle!]
+    name [integer!]
+]
 
 export zmq-bind: command [
     "Accept connections on a socket"
