@@ -7,14 +7,14 @@ A REBOL 3 extension providing a low-level binding to the ØMQ library.
 Status
 ------
 
-This extension is currently developed and tested against ØMQ 2.0.10. Most parts of the ØMQ API are implemented, currently missing are:
+This extension is currently developed and tested against ØMQ 2.0.10. Most parts
+of the ØMQ API are implemented, currently missing are:
 
-- `zmq_setsockopt`, `zmq_getsockopt`
 - `zmq_poll`
 
-Simple REP/REQ examples already work fine (such as the included
-`examples/hwclient.r3` and `examples/hwserver.r3`). PUB/SUB is expected to work
-as soon as `setsockopt` is implemented.
+This makes r3-zmq usable for most basic scenarios. REP/REQ is illustrated  by
+`hwserver.r3`/`hwclient.r3` and `wuserver.r3`/`wuclient.r3` form a basic
+PUB/SUB pair.
 
 
 License
