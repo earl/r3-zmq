@@ -298,6 +298,57 @@ static int cmd_zmq_recv(RXIFRM *frm, void *data) {
     return RXR_VALUE;
 }
 
+static int cmd_zmq_poll(RXIFRM *frm, void *data) {
+    // Expected form of the "spec" block: [socket1 events1 socket2 events2 ...]
+    RXIARG spec_block = RXA_ARG(frm, 1);
+    long timeout = RXA_INT64(frm, 2);
+    int spec_index = spec_block.index;
+    int spec_tail = RL_SERIES(spec_block.series, RXI_SER_TAIL);
+    int spec_length = spec_tail - spec_index;
+    int nitems = spec_length / 2;
+    RXIARG socket;
+    RXIARG events;
+    int socket_type;
+    int events_type;
+    int i;
+    int nready;
+    REBSER *result;
+    RXIARG result_events;
+
+    // @@ check spec length
+
+    // Prepare pollitem_t array
+    zmq_pollitem_t pollitems[nitems];
+    for (i = 0; i < nitems; ++i) {
+        socket_type = RL_GET_VALUE(spec_block.series, i * 2, &socket);
+        events_type = RL_GET_VALUE(spec_block.series, i * 2 + 1, &events);
+        // @@ check types
+
+        pollitems[i].socket = socket.addr;
+        pollitems[i].events = ZMQ_POLLIN;
+    }
+
+    nready = zmq_poll(pollitems, nitems, timeout); // @@ check! -1 or nready
+
+    // Create results block
+    result = RL_MAKE_BLOCK(nready);
+    for (i = 0; i < nready; ++i) {
+        if (pollitems[i].revents == 0)
+            continue;
+
+        RL_GET_VALUE(spec_block.series, i * 2, &socket);
+        result_events.int64 = pollitems[i].revents;
+
+        RL_SET_VALUE(result, i * 2, socket, RXT_HANDLE);
+        RL_SET_VALUE(result, i * 2 + 1, result_events, RXT_INTEGER);
+    }
+
+    RXA_SERIES(frm, 1) = result;
+    RXA_INDEX(frm, 1) = 0;
+    RXA_TYPE(frm, 1) = RXT_BLOCK;
+    return RXR_VALUE;
+}
+
 static int cmd_zmq_errno(RXIFRM *frm, void *data) {
     int errnum = zmq_errno();
     RXA_INT64(frm, 1) = errnum;

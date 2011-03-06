@@ -42,6 +42,11 @@ export zmq-constants: map [
     ;; send/recv options
     noblock 1
     sndmore 2
+
+    ;; poll options
+    pollin 1
+    pollout 2
+    ;pollerr 4 ;; not used for 0MQ sockets (& we can't support standard sockets)
 ]
 
 export zmq-init: command [
@@ -171,7 +176,11 @@ export zmq-recv: command [
     flags [integer!]
 ]
 
-; @@ poll?
+export zmq-poll: command [
+    "Input/output multiplexing"
+    poll-spec [block!]
+    timeout [integer!] "Timeout in microseconds"
+]
 
 export zmq-errno: command [
     "Retrieve the error code"
