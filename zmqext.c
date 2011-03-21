@@ -61,14 +61,14 @@ static REBSER *rlu_make_binary(const char *source, size_t size) {
 /** Copy a REBOL binary!'s data & size into a C char* & size_t, respectively. */
 static char *rlu_copy_binary(const RXIARG binary, size_t *size) {
     REBSER *binary_series = binary.series;
-    size_t binary_head = binary.index;
+    size_t binary_index = binary.index;
     size_t binary_tail = RL_SERIES(binary_series, RXI_SER_TAIL);
     char *binary_data = (char*)RL_SERIES(binary_series, RXI_SER_DATA);
     char *result;
 
-    *size = binary_tail - binary_head;
+    *size = binary_tail - binary_index;
     result = (char*)malloc(*size); // @@ check
-    memcpy(result, binary_data + binary_head, *size);
+    memcpy(result, binary_data + binary_index, *size);
 
     return result;
 }
@@ -123,14 +123,15 @@ static int cmd_zmq_msg_free(RXIFRM *frm, void *data) {
 
 static int cmd_zmq_msg_init(RXIFRM *frm, void *data) {
     zmq_msg_t *msg = (zmq_msg_t*)RXA_HANDLE(frm, 1);
-    RXA_INT64(frm, 1) = zmq_msg_init(msg);
+    int rc = zmq_msg_init(msg);
+    RXA_INT64(frm, 1) = rc;
     RXA_TYPE(frm, 1) = RXT_INTEGER;
     return RXR_VALUE;
 }
 
 static int cmd_zmq_msg_init_size(RXIFRM *frm, void *data) {
     zmq_msg_t *msg = (zmq_msg_t*)RXA_HANDLE(frm, 1);
-    size_t msg_size = RXA_INT32(frm, 2);
+    size_t msg_size = RXA_INT64(frm, 2);
     int rc = zmq_msg_init_size(msg, msg_size);
     RXA_INT64(frm, 1) = rc;
     RXA_TYPE(frm, 1) = RXT_INTEGER;
@@ -154,7 +155,8 @@ static int cmd_zmq_msg_init_data(RXIFRM *frm, void *data) {
 
 static int cmd_zmq_msg_close(RXIFRM *frm, void *data) {
     zmq_msg_t *msg = (zmq_msg_t*)RXA_HANDLE(frm, 1);
-    RXA_INT64(frm, 1) = zmq_msg_close(msg);
+    int rc = zmq_msg_close(msg);
+    RXA_INT64(frm, 1) = rc;
     RXA_TYPE(frm, 1) = RXT_INTEGER;
     return RXR_VALUE;
 }
@@ -319,7 +321,8 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     assert((spec_tail - spec_index) % 2 == 0
             && "Invalid poll-spec: length"); // @@ error!
 
-    // Prepare pollitem_t array
+    // Prepare pollitem_t array by mapping a pair of REBOL handle!/integer!
+    // values to one zmq_pollitem_t.
     zmq_pollitem_t pollitems[nitems];
     for (i = 0; i < nitems; ++i) {
         socket_type = RL_GET_VALUE(spec_block.series, i * 2, &socket);
@@ -333,7 +336,9 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
 
     nready = zmq_poll(pollitems, nitems, timeout); // @@ check! -1 or nready
 
-    // Create results block
+    // Create results block of the same form as the items block, but filter out
+    // all 0MQ socket handle!s (& their events integer!) for which no event is
+    // ready.
     result = RL_MAKE_BLOCK(nready);
     for (i = 0; i < nready; ++i) {
         if (pollitems[i].revents == 0)
@@ -379,7 +384,7 @@ static int cmd_zmq_version(RXIFRM *frm, void *data) {
     return RXR_VALUE;
 }
 
-/** Temporary workaround for bug#1868. */
+/** Temporary workaround for bug#1868 */
 static int cmd_zmq_equal_(RXIFRM *frm, void *data) {
     void *h1 = RXA_HANDLE(frm, 1);
     void *h2 = RXA_HANDLE(frm, 2);
