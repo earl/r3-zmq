@@ -1,30 +1,39 @@
-REBOL [author: "Andreas Bolka" date: 2011-03-06]
+REBOL [
+    title: "Weather update client in REBOL 3"
+    author: "Andreas Bolka"
+    note: {
+        Connects SUB socket to tcp://localhost:5556
+        Collects weather updates and finds avg temp in zipcode
+    }
+]
 
 import %extload.r3
 import %zmqext.rx
 
-;; 0MQ socket to talk to server
+import %helpers.r3
+
 ctx: zmq-init 1
+
+;; 0MQ socket to talk to server
+print "Collecting updates from weather server ..."
 subscriber: zmq-socket ctx zmq-constants/sub
 zmq-connect subscriber "tcp://localhost:5556"
 
-;; Subscribe to a zipcode, default to NYC (10001)
+;; Subscribe to zipcode, default is NYC, 10001
 filter: to-integer any [attempt [first system/options/args] 10001]
-zmq-setsockopt-binary subscriber zmq-constants/subscribe to-binary mold filter
+zmq-setsockopt-binary subscriber zmq-constants/subscribe to binary! form filter
 
 ;; Process 100 updates
+num-updates: 100
 total-temp: 0
-msg: zmq-msg-alloc
-loop 100 [
-    zmq-msg-init msg
-    zmq-recv subscriber msg 0
-    set [zipcode temperature rel-humidity] load zmq-msg-data msg
-    zmq-msg-close msg
+loop num-updates [
+    string: s-recv subscriber
+    set [zipcode temperature rel-humidity] load string
     total-temp: total-temp + temperature
 ]
-zmq-msg-free msg
-print ["Average temperature for zipcode" filter "was" (total-temp / 100) "°F"]
+print [
+    "Average temperature for zipcode" filter "was" total-temp / num-updates "F"
+]
 
-;; Shut down
 zmq-close subscriber
 zmq-term ctx
