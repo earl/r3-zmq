@@ -14,7 +14,8 @@ place.
 
 r3-zmq should already be usable for most basic scenarios. REP/REQ is
 illustrated by `hwserver.r3`/`hwclient.r3` and `wuserver.r3`/`wuclient.r3` form
-a basic PUB/SUB pair.
+a basic PUB/SUB pair. `taskvent.r3`/`taskwork.r3`/`tasksink.r3` demonstrate a
+two-stage PUSH/PULL chain.
 
 
 License
