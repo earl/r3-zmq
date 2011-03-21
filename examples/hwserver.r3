@@ -1,27 +1,34 @@
-REBOL [author: "Andreas Bolka" date: 2011-03-02]
+REBOL [
+    title: "Hello World server in REBOL 3"
+    author: "Andreas Bolka"
+    note: {
+        Binds REP socket to tcp://*:5555
+        Expects "Hello" from client, replies with "World"
+    }
+]
 
 import %extload.r3
 import %zmqext.rx
 
+import %helpers.r3
+
 ctx: zmq-init 1
+
+;; Socket to talk to clients.
 socket: zmq-socket ctx zmq-constants/rep
 zmq-bind socket "tcp://*:5555"
 
-msg: zmq-msg-alloc
 forever [
-    ;; Wait for next request from client
-    zmq-msg-init msg
-    zmq-recv socket msg 0
-    print ["Received request:" to-string zmq-msg-data msg]
-    zmq-msg-close msg
+    ;; Wait for next request from client.
+    s-recv socket
+    print "Received Hello"
 
-    wait 1 ;; Do some 'work'
+    wait 1 ;; Do some 'work'.
 
-    ;; Send reply back to client
-    zmq-msg-init-data msg to-binary "World"
-    zmq-send socket msg 0
-    zmq-msg-close msg
+    ;; Send reply back to client.
+    s-send socket "World"
 ]
-;zmq-msg-free msg
-;zmq-close socket
-;zmq-term ctx
+
+;; We never get here, but if we did, this would be how we end.
+zmq-close socket
+zmq-term ctx

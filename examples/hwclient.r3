@@ -1,26 +1,31 @@
-REBOL [author: "Andreas Bolka" date: 2011-03-02]
+REBOL [
+    title: "Hello World client in REBOL 3"
+    author: "Andreas Bolka"
+    note: {
+        Connects REQ socket to tcp://localhost:5555
+        Sends "Hello" to server, expects "World" back
+    }
+]
 
 import %extload.r3
 import %zmqext.rx
 
+import %helpers.r3
+
 ctx: zmq-init 1
+
+;; Socket to talk to server.
+print "Connecting to hello world server ..."
 socket: zmq-socket ctx zmq-constants/req
 zmq-connect socket "tcp://localhost:5555"
 
-msg: zmq-msg-alloc
 repeat i 10 [
-    ;; Sending request to server
-    print ["Sending request" i "..."]
-    zmq-msg-init-data msg to-binary "Hello"
-    zmq-send socket msg 0
-    zmq-msg-close msg
+    print ["Sending Hello" i "..."]
+    s-send socket "Hello"
 
-    ;; Waiting for reply
-    zmq-msg-init msg
-    zmq-recv socket msg 0
-    print ["Received reply" i "[" to-string zmq-msg-data msg "]"]
-    zmq-msg-close msg
+    res: s-recv socket
+    print ["Received World" i]
 ]
-zmq-msg-free msg
+
 zmq-close socket
 zmq-term ctx
