@@ -8,3 +8,6 @@ For those examples to work as-is, you require:
 
 You should already have the former two, extload.r3 can be obtained from
 https://github.com/earl/rebol3/ (in the modules/ subdirectory).
+
+All source code examples are licensed unter MIT/X11 terms (see
+LICENSE.examples).
