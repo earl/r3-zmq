@@ -15,8 +15,8 @@ import %helpers.r3
 ;; Prepare our context and publisher
 ctx: zmq-init 1
 publisher: zmq-socket ctx zmq-constants/pub
-zmq-bind publisher "tcp://*:5556"
-zmq-bind publisher "ipc://weather.ipc"
+zmq-bind publisher tcp://*:5556
+zmq-bind publisher ipc://weather.ipc
 
 ;; Initialise random number generator
 random/seed now/precise
