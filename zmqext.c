@@ -10,8 +10,8 @@
 */
 
 #include <assert.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <zmq.h>
 
@@ -303,10 +303,10 @@ static int cmd_zmq_recv(RXIFRM *frm, void *data) {
 
 static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     // Expected form of the "spec" block: [socket1 events1 socket2 events2 ...]
-    RXIARG spec_block = RXA_ARG(frm, 1);
+    REBSER *spec_series = RXA_SERIES(frm, 1);
     long timeout = RXA_INT64(frm, 2);
-    int spec_index = spec_block.index;
-    int spec_tail = RL_SERIES(spec_block.series, RXI_SER_TAIL);
+    int spec_index = RXA_INDEX(frm, 1);
+    int spec_tail = RL_SERIES(spec_series, RXI_SER_TAIL);
     int spec_length = spec_tail - spec_index;
     int nitems = spec_length / 2;
     RXIARG socket;
@@ -318,15 +318,15 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     REBSER *result;
     RXIARG result_events;
 
-    assert((spec_tail - spec_index) % 2 == 0
+    assert(spec_length % 2 == 0
             && "Invalid poll-spec: length"); // @@ error!
 
     // Prepare pollitem_t array by mapping a pair of REBOL handle!/integer!
     // values to one zmq_pollitem_t.
     zmq_pollitem_t pollitems[nitems];
     for (i = 0; i < nitems; ++i) {
-        socket_type = RL_GET_VALUE(spec_block.series, i * 2, &socket);
-        events_type = RL_GET_VALUE(spec_block.series, i * 2 + 1, &events);
+        socket_type = RL_GET_VALUE(spec_series, i * 2, &socket);
+        events_type = RL_GET_VALUE(spec_series, i * 2 + 1, &events);
         assert(socket_type == RXT_HANDLE && events_type == RXT_INTEGER
                 && "Invalid poll-spec: types"); // @@ error!
 
@@ -344,7 +344,7 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
         if (pollitems[i].revents == 0)
             continue;
 
-        RL_GET_VALUE(spec_block.series, i * 2, &socket);
+        RL_GET_VALUE(spec_series, i * 2, &socket);
         result_events.int64 = pollitems[i].revents;
 
         RL_SET_VALUE(result, i * 2, socket, RXT_HANDLE);
