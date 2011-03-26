@@ -331,7 +331,7 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
                 && "Invalid poll-spec: types"); // @@ error!
 
         pollitems[i].socket = socket.addr;
-        pollitems[i].events = ZMQ_POLLIN;
+        pollitems[i].events = (short)events.int64;
     }
 
     nready = zmq_poll(pollitems, nitems, timeout); // @@ check! -1 or nready
