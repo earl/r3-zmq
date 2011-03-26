@@ -314,8 +314,10 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     int socket_type;
     int events_type;
     int i;
+    int k;
     int nready;
     REBSER *result;
+    RXIARG result_socket;
     RXIARG result_events;
 
     assert(spec_length % 2 == 0
@@ -339,16 +341,17 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     // Create results block of the same form as the items block, but filter out
     // all 0MQ socket handle!s (& their events integer!) for which no event is
     // ready.
-    result = RL_MAKE_BLOCK(nready);
-    for (i = 0; i < nready; ++i) {
+    result = RL_MAKE_BLOCK(nready * 2);
+    for (i = 0, k = 0; i < nitems && k < nready; ++i) {
         if (pollitems[i].revents == 0)
             continue;
 
-        RL_GET_VALUE(spec_series, i * 2, &socket);
+        RL_GET_VALUE(spec_series, i * 2, &result_socket);
         result_events.int64 = pollitems[i].revents;
 
-        RL_SET_VALUE(result, i * 2, socket, RXT_HANDLE);
-        RL_SET_VALUE(result, i * 2 + 1, result_events, RXT_INTEGER);
+        RL_SET_VALUE(result, k * 2, result_socket, RXT_HANDLE);
+        RL_SET_VALUE(result, k * 2 + 1, result_events, RXT_INTEGER);
+        ++k;
     }
 
     RXA_SERIES(frm, 1) = result;
