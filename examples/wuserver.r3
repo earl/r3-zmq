@@ -28,7 +28,7 @@ forever [
     rel-humidity: (random 50) + 10
 
     ;; Send message to all subscribers
-    s-send publisher remold [zipcode temperature rel-humidity]
+    s-send publisher reform [zipcode temperature rel-humidity]
 ]
 
 zmq-close publisher
