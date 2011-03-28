@@ -80,7 +80,7 @@ export zmq-msg-init-size: command [
 ]
 
 export zmq-msg-init-data: command [
-    "Initialise 0MQ message with the supplied data"
+    "Initialise 0MQ message with (a copy of) supplied data"
     msg [handle!]
     data [binary!]
 ]
@@ -91,7 +91,7 @@ export zmq-msg-close: command [
 ]
 
 export zmq-msg-data: command [
-    "Retrieve message content (as binary!)"
+    "Retrieve (copy of) message content (as binary!)"
     msg [handle!]
 ]
 
