@@ -20,10 +20,13 @@ export zmq-constants: map [
     sub 2
     req 3
     rep 4
-    xreq 5
-    xrep 6
+    dealer 5 ;; >= 0MQ 2.1
+    router 6 ;; >= 0MQ 2.1
     pull 7
     push 8
+
+    xreq 5 ;; deprecated in 0MQ 2.1
+    xrep 6 ;; deprecated in 0MQ 2.1
 
     ;; socket options
     hwm 1
@@ -38,6 +41,15 @@ export zmq-constants: map [
     sndbuf 11
     rcvbuf 12
     rcvmore 13
+
+    fd 14 ;; >= 0MQ 2.1
+    events 15 ;; >= 0MQ 2.1
+    type 16 ;; >= 0MQ 2.1
+    linger 17 ;; >= 0MQ 2.1
+    reconnect-ivl 18 ;; >= 0MQ 2.1
+    backlog 19 ;; >= 0MQ 2.1
+    recovery-ivl-msec 20 ;; >= 0MQ 2.1
+    reconnect-ivl-max 21 ;; >= 0MQ 2.1
 
     ;; send/recv options
     noblock 1
