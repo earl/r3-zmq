@@ -17,7 +17,7 @@ ctx: zmq-init 1
 ;; 0MQ socket to talk to server
 print "Collecting updates from weather server ..."
 subscriber: zmq-socket ctx zmq-constants/sub
-zmq-connect subscriber "tcp://localhost:5556"
+zmq-connect subscriber tcp://localhost:5556
 
 ;; Subscribe to zipcode, default is NYC, 10001
 filter: to-integer any [attempt [first system/options/args] 10001]

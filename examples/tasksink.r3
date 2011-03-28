@@ -15,7 +15,7 @@ import %helpers.r3
 ;; Prepare our context and socket
 ctx: zmq-init 1
 receiver: zmq-socket ctx zmq-constants/pull
-zmq-bind receiver "tcp://*:5558"
+zmq-bind receiver tcp://*:5558
 
 ;; Wait for start of batch
 s-recv receiver

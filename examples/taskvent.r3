@@ -16,7 +16,7 @@ ctx: zmq-init 1
 
 ;; Socket to send messages on
 sender: zmq-socket ctx zmq-constants/push
-zmq-bind sender "tcp://*:5557"
+zmq-bind sender tcp://*:5557
 
 ask "Press Enter when the workers are ready."
 print "Sending tasks to workers..."

@@ -169,13 +169,13 @@ export zmq-getsockopt-int: command [
 export zmq-bind: command [
     "Accept connections on a socket"
     socket [handle!]
-    endpoint [string!]
+    endpoint [string! url!]
 ]
 
 export zmq-connect: command [
     "Connect a socket"
     socket [handle!]
-    endpoint [string!]
+    endpoint [string! url!]
 ]
 
 export zmq-send: command [

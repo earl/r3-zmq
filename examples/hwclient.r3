@@ -17,7 +17,7 @@ ctx: zmq-init 1
 ;; Socket to talk to server.
 print "Connecting to hello world server ..."
 socket: zmq-socket ctx zmq-constants/req
-zmq-connect socket "tcp://localhost:5555"
+zmq-connect socket tcp://localhost:5555
 
 repeat i 10 [
     print ["Sending Hello" i "..."]

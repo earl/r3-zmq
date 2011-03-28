@@ -20,11 +20,11 @@ ctx: zmq-init 1
 
 ;; Socket to receive messages on
 receiver: zmq-socket ctx zmq-constants/pull
-zmq-connect receiver "tcp://localhost:5557"
+zmq-connect receiver tcp://localhost:5557
 
 ;; Socket to send messages to
 sender: zmq-socket ctx zmq-constants/push
-zmq-connect sender "tcp://localhost:5558"
+zmq-connect sender tcp://localhost:5558
 
 ;; Process tasks forever
 forever [

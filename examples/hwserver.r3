@@ -16,7 +16,7 @@ ctx: zmq-init 1
 
 ;; Socket to talk to clients.
 socket: zmq-socket ctx zmq-constants/rep
-zmq-bind socket "tcp://*:5555"
+zmq-bind socket tcp://*:5555
 
 forever [
     ;; Wait for next request from client.
