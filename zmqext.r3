@@ -47,6 +47,10 @@ export zmq-constants: map [
     pollin 1
     pollout 2
     ;pollerr 4 ;; not used for 0MQ sockets (& we can't support standard sockets)
+
+    ;; useful error codes
+    eintr 4
+    eagain 11
 ]
 
 export zmq-init: command [
