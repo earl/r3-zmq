@@ -41,7 +41,6 @@ export zmq-constants: map [
     sndbuf 11
     rcvbuf 12
     rcvmore 13
-
     fd 14 ;; >= 0MQ 2.1
     events 15 ;; >= 0MQ 2.1
     type 16 ;; >= 0MQ 2.1
@@ -65,7 +64,7 @@ export zmq-constants: map [
     eagain 11
 ]
 
-export zmq-init: command [
+export zmq-init: command [ ;; >= 0MQ 2.0.7
     "Initialise 0MQ context"
     io-threads [integer!]
 ]
