@@ -59,6 +59,11 @@ export zmq-constants: map [
     pollout 2
     ;pollerr 4 ;; not used for 0MQ sockets (& we can't support standard sockets)
 
+    ;; device options
+    streamer 1 ;; >= 0MQ 2.0.11
+    forwarder 2 ;; >= 0MQ 2.0.11
+    queue 3 ;; >= 0MQ 2.0.11
+
     ;; useful error codes
     eintr 4
     eagain 11
@@ -195,6 +200,13 @@ export zmq-poll: command [
     "Input/output multiplexing"
     poll-spec [block!]
     timeout [integer!] "Timeout in microseconds"
+]
+
+export zmq-device: command [ ;; >= 0MQ 2.0.11
+    "Start build-in 0MQ device"
+    device [integer!]
+    frontend [handle!]
+    backend [handle!]
 ]
 
 export zmq-errno: command [

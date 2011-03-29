@@ -360,6 +360,16 @@ static int cmd_zmq_poll(RXIFRM *frm, void *data) {
     return RXR_VALUE;
 }
 
+static int cmd_zmq_device(RXIFRM *frm, void *data) {
+    int device = RXA_INT32(frm, 1);
+    void *frontend = RXA_HANDLE(frm, 2);
+    void *backend = RXA_HANDLE(frm, 3);
+    int rc = zmq_device(device, frontend, backend);
+    RXA_INT64(frm, 1) = rc;
+    RXA_TYPE(frm, 1) = RXT_INTEGER;
+    return RXR_VALUE;
+}
+
 static int cmd_zmq_errno(RXIFRM *frm, void *data) {
     int errnum = zmq_errno();
     RXA_INT64(frm, 1) = errnum;
